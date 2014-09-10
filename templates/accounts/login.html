@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title> Login - Webponto </title>
+{% endblock %}
+
+{% block content %}
+    {% if successfull %}
+        <p>Successfully logged in</p>
+    {% else %}
+        {% if login_form.errors.items %}
+            {% for key, error in login_form.errors.items %}
+                {{ error}}
+            {% endfor %}
+        {% endif %}
+        <form action="/accounts/login/" method="post">
+            {% csrf_token %}
+            {{ login_form.as_p }}
+            <input type="submit" value="Login"/>
+        </form>
+    {% endif %}
+{% endblock %}
