@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title> Register - Webponto </title>
+{% endblock %}
+
+{% block content %}
+    {% if registered %}
+        <p>Thank you for registering</p>
+    {% else %}
+        <form action="/accounts/register/" method="post">
+            {% csrf_token %}
+            {{ user_form.as_p }}
+            {{ profile_form.as_p }}
+            <input type="submit" value="Register"/>
+        </form>
+    {% endif %}
+{% endblock %}
