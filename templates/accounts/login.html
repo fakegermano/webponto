@@ -6,6 +6,9 @@
 {% block content %}
     {% if successfull %}
         <p>Successfully logged in</p>
+        <p> Click <a href="/accounts/logout/">here</a> to logout</p>
+    {% elif logged %}
+        <p>Already logged in, click <a href="/accounts/logout/">here</a> to logout</p>
     {% else %}
         {% if login_form.errors.items %}
             {% for key, error in login_form.errors.items %}

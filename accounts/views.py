@@ -1,10 +1,10 @@
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render, render_to_response
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, render_to_response, redirect
 from django.template import RequestContext
 from accounts.forms import UserForm, UserProfileForm, LoginForm
 # Create your views here.
 from accounts.models import UserProfile
-from django.forms.util import ErrorList, ErrorDict
 
 
 def register(request):
@@ -51,6 +51,9 @@ def register(request):
 def user_login(request):
     context = RequestContext(request)
     successfull = False
+    logged = False
+    if request.user.is_authenticated():
+        logged = True;
     # if http is post take form data and login
     if request.method == 'POST':
         # get form data
@@ -77,8 +80,9 @@ def user_login(request):
                         successfull = True
                     else:
                         # error messages for the form
-                        login_form._errors['desabilidata'] = login_form.error_class([u'Sua conta foi desabilitada, entre com contato '
-                                                             u'com o administrador'])
+                        login_form._errors['desabilitada'] = login_form.error_class([u'Sua conta foi desabilitada, '
+                                                                                     u'entre com contato com o '
+                                                                                     u'administrador'])
                 elif not flag:
                     # error messages for the form
                     login_form._errors['invalidos'] = login_form.error_class([u'Login ou senha invalidos'])
@@ -90,8 +94,12 @@ def user_login(request):
         # generates a blank unbound form
         login_form = LoginForm()
     template = 'accounts/login.html'
-    return render_to_response(template, {'login_form': login_form,
-                                         'successfull': successfull}, context)
-
-
+    return render(request, template, {'login_form': login_form,
+                                         'successfull': successfull,
+                                         'logged': logged})
+@login_required
+def user_logout(request):
+    logout(request)
+    template = 'accounts/logout.html'
+    return render(request, template)
 
